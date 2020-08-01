@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func main() {
@@ -15,5 +17,17 @@ func main() {
 }
 
 func UploadFile(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(33 << 22)
+
+	buffer := bytes.Buffer
+
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		panic(err)
+	}
+
+	name := strings.Split(header.Filename, ".")
+
+	fmt.Println("Name: ", name)
 
 }
