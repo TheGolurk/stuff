@@ -33,7 +33,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Name: ", name)
 
-	f, err := os.OpenFile("./downloaded", os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile("mipdf.pdf", os.O_WRONLY|os.O_CREATE, 0666)
 	defer f.Close()
 	io.Copy(f, file)
 
