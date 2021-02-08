@@ -3,38 +3,41 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
 
 func main() {
-	file, err := os.OpenFile("file.html", os.O_APPEND|os.O_RDWR|os.O_TRUNC|os.O_WRONLY, 0644)
+	lines, err := File2lines("file.html")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("11", err)
 	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	scanner.Split(bufio.ScanLines)
-
-	line := 0
-	for scanner.Scan() {
-		line++
-		text := scanner.Text()
-		if strings.Contains(text, "<svg") {
-			fmt.Println(text, line)
-			n, err := file.WriteAt([]byte("HOLA"), int64(line))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			fmt.Println("N: ", n)
-			return
+	for _, v := range lines {
+		if strings.Contains(v, "<svg") {
+			fmt.Println("FOUNDED", v)
 		}
 	}
+}
 
-	if err := scanner.Err(); err != nil {
-		fmt.Println(err)
+func File2lines(filePath string) ([]string, error) {
+	f, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
 	}
+	defer f.Close()
+	return LinesFromReader(f)
+}
+
+func LinesFromReader(r io.Reader) ([]string, error) {
+	var lines []string
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return lines, nil
 }
