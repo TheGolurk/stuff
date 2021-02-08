@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	file, err := os.Open("file.html")
+	file, err := os.OpenFile("file.html", os.O_APPEND|os.O_RDWR|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -18,10 +18,19 @@ func main() {
 
 	scanner.Split(bufio.ScanLines)
 
+	line := 0
 	for scanner.Scan() {
+		line++
 		text := scanner.Text()
 		if strings.Contains(text, "<svg") {
-			fmt.Println(text)
+			fmt.Println(text, line)
+			n, err := file.WriteAt([]byte("HOLA"), int64(line))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println("N: ", n)
+			return
 		}
 	}
 
