@@ -20,7 +20,7 @@ func main() {
 
 	for scanner.Scan() {
 		text := scanner.Text()
-		if strings.Contains(text, "svg") {
+		if strings.Contains(text, "<svg") {
 			fmt.Println(text)
 		}
 	}
