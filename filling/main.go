@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -15,7 +16,14 @@ func main() {
 	}
 	for _, v := range lines {
 		if strings.Contains(v, "<svg") {
-			fmt.Println("FOUNDED", v)
+			expr := regexp.MustCompile(`(\d+.\d+)`)
+			values := expr.FindAll([]byte(v), -1)
+
+			for i, k := range values {
+				fmt.Printf("%q %d /n", k, i)
+			}
+
+			return
 		}
 	}
 }
