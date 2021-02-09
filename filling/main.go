@@ -15,7 +15,7 @@ func main() {
 		fmt.Println("11", err)
 
 	}
-	for _, v := range lines {
+	for i, v := range lines {
 		if strings.Contains(v, "<svg") {
 			w, h := "", ""
 			expr := regexp.MustCompile(`(\d+.\d+)`)
@@ -31,6 +31,7 @@ func main() {
 
 			v = strings.Replace(v, ">", "", 1)
 			v = fmt.Sprintf(`%s width="%s" height="%s">`, v, w, h)
+			lines[i] = v
 		}
 	}
 
