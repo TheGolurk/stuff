@@ -18,15 +18,13 @@ func main() {
 	for i, v := range lines {
 		if strings.Contains(v, "<svg") {
 			w, h := "", ""
-			expr := regexp.MustCompile(`(\d+[.\d+]?)`)
+			expr := regexp.MustCompile(`(\d+(?:\.\d+)?)`)
 			values := expr.FindAll([]byte(v), -1)
 
-			for i, k := range values {
-				if i == 2 {
-					w = string(k)
-				} else if i == 3 {
-					h = string(k)
-				}
+			lenV := int(len(values)) - 1
+			if lenV > 2 {
+				w = string(values[lenV-1])
+				h = string(values[lenV])
 			}
 
 			v = strings.Replace(v, ">", "", 1)
