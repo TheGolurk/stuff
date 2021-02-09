@@ -33,7 +33,11 @@ func main() {
 			v = fmt.Sprintf(`%s width="%s" height="%s">`, v, w, h)
 		}
 	}
-	fmt.Println("lines", lines)
+
+	err = CreateAndFill(lines)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func File2lines(filePath string) ([]string, error) {
@@ -56,4 +60,20 @@ func LinesFromReader(r io.Reader) ([]string, error) {
 	}
 
 	return lines, nil
+}
+
+func CreateAndFill(lines []string) error {
+	file, err := os.Create("parsed.html")
+	if err != nil {
+		return err
+	}
+
+	for _, l := range lines {
+		_, err = file.WriteString(l)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
