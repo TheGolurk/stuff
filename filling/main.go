@@ -13,6 +13,7 @@ func main() {
 	lines, err := File2lines("file.html")
 	if err != nil {
 		fmt.Println("11", err)
+
 	}
 	for _, v := range lines {
 		if strings.Contains(v, "<svg") {
@@ -27,12 +28,12 @@ func main() {
 					h = string(k)
 				}
 			}
+
 			v = strings.Replace(v, ">", "", 1)
 			v = fmt.Sprintf(`%s width="%s" height="%s">`, v, w, h)
-			fmt.Println("final", v)
-			return
 		}
 	}
+	fmt.Println("lines", lines)
 }
 
 func File2lines(filePath string) ([]string, error) {
