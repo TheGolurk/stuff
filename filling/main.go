@@ -18,7 +18,7 @@ func main() {
 	for i, v := range lines {
 		if strings.Contains(v, "<svg") {
 			w, h := "", ""
-			expr := regexp.MustCompile(`(\d+.\d+)`)
+			expr := regexp.MustCompile(`(\d+[.\d+]?)`)
 			values := expr.FindAll([]byte(v), -1)
 
 			for i, k := range values {
