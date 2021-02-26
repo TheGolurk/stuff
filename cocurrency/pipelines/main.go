@@ -6,40 +6,38 @@ import (
 )
 
 func main() {
-	// Set up the pipeline
-	c := gen(2, 3)
-	out := sq(c)
+	// Set up a done channel that's shared by the whole pipeline,
+	// and close that channel when this pipeline exits, as a signal
+	// for all the goroutines we started to exit.
+	done := make(chan struct{})
+	defer close(done)
 
-	// Consume the output
-	fmt.Println(<-out)
-	fmt.Println(<-out)
+	in := gen(done, 2, 3)
 
-	for n := range sq(sq(gen(2, 3))) {
-		fmt.Println(n)
-	}
+	// Distribute the sq work across two goroutines that both read from in.
+	c1 := sq(done, in)
+	c2 := sq(done, in)
 
-	// Fan-out, Fan-in
-	in := gen(2, 3)
+	// Consume the first value from output.
+	out := merge(done, c1, c2)
+	fmt.Println(<-out) // 4 or 9
 
-	// Distribute the sq work across two goroutines
-	c1 := sq(in)
-	c2 := sq(in)
-
-	// Consume the merged output
-	for n := range merge(c1, c2) {
-		fmt.Println(n)
-	}
+	// done will be closed by the deferred call.
 }
 
-func merge(cs ...<-chan int) <-chan int {
+func merge(done <-chan struct{}, cs ...<-chan int) <-chan int {
 	var wg sync.WaitGroup
 	out := make(chan int)
 
 	output := func(c <-chan int) {
+		defer wg.Done()
 		for n := range c {
-			out <- n
+			select {
+			case out <- n:
+			case <-done:
+				return
+			}
 		}
-		wg.Done()
 	}
 
 	wg.Add(len(cs))
@@ -55,13 +53,20 @@ func merge(cs ...<-chan int) <-chan int {
 }
 
 func gen(nums ...int) <-chan int {
-	out := make(chan int)
+	/*out := make(chan int)
 	go func() {
 		for _, n := range nums {
 			out <- n
 		}
 		close(out)
 	}()
+
+	A BETTER WAY TO IMPLEMENT THIS FUNCTION IS USING A BUFFER  */
+	out := make(chan int, len(nums))
+	for _, n := range nums {
+		out <- n
+	}
+	close(out)
 	return out
 }
 
