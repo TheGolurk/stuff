@@ -52,7 +52,7 @@ func merge(done <-chan struct{}, cs ...<-chan int) <-chan int {
 	return out
 }
 
-func gen(nums ...int) <-chan int {
+func gen(done <-chan struct{}, nums ...int) <-chan int {
 	/*out := make(chan int)
 	go func() {
 		for _, n := range nums {
@@ -62,21 +62,31 @@ func gen(nums ...int) <-chan int {
 	}()
 
 	A BETTER WAY TO IMPLEMENT THIS FUNCTION IS USING A BUFFER  */
-	out := make(chan int, len(nums))
-	for _, n := range nums {
-		out <- n
-	}
-	close(out)
+	out := make(chan int)
+	go func() {
+		defer close(out)
+		for _, n := range nums {
+			select {
+			case out <- n:
+			case <-done:
+				return
+			}
+		}
+	}()
 	return out
 }
 
-func sq(in <-chan int) <-chan int {
+func sq(done <-chan struct{}, in <-chan int) <-chan int {
 	out := make(chan int)
 	go func() {
+		defer close(out)
 		for n := range in {
-			out <- n * n
+			select {
+			case out <- n * n:
+			case <-done:
+				return
+			}
 		}
-		close(out)
 	}()
 	return out
 }
