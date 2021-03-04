@@ -29,6 +29,9 @@ $ aws ec2 describe-instances --filters "Name=instance-type,Values=t2.micro" --qu
 # ⭐️  build host with: 
 $ aws ec2 describe-instances --filters "Name=instance-type,Values=t2.micro" --query "Reservations[*].Instances[*].{name: 'Data', DnsName: PublicDnsName, PublicIP: PublicIpAddress}" --output table
 
+# Connect to ec2 instance
+ssh -i ~/.ssh/cli-key.pem ec2-user@ec2-54-190-8-242.us-west-2.compute.amazonaws.com
+
 # HERE PASTE INSTANCE-IDS
 
 $ aws ec2 terminate-instances --instance-ids i-5203422c
