@@ -1,0 +1,6 @@
+$ sudo amazon-linux-extras list | grep nginx
+
+# enable nginx package
+$ sudo amazon-linux-extras enable nginx1
+
+
