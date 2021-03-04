@@ -6,6 +6,18 @@ $ aws ec2 create-security-group --group-name cli-sg --description "Security Grou
     "GroupId": "sg-02dfff562bb9917e1"
 }
 
+# Authorize ports
+$ aws ec2 authorize-security-group-ingress \
+    --group-name cli-sg \
+    --protocol tcp \
+    --port 22 \
+    --cidr 0.0.0.0/0
+
+$ aws ec2 authorize-security-group-ingress \
+    --group-id sg-02dfff562bb9917e1 \
+    --protocol tcp \
+    --port 80 \
+
 $ aws ec2 describe-security-groups --group-names cli-sg
 
 $ aws ec2 run-instances --image-id ami-0a1ccc021b9016ec9 --count 1 --instance-type t2.micro --key-name cli-key --security-groups cli-sg
