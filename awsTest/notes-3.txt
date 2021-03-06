@@ -1,0 +1,22 @@
+## aws cli commands to create a ec2-vpc instance to the mxintech workshop
+## author: @thegolurk Chrtistian Hernandez
+
+$ aws ec2 create-security-group --group-name cli-sg-3 --description "Security " --vpc-id vpc-943c42ec
+
+$ aws ec2 authorize-security-group-ingress \
+    --group-id sg-1234567890abcdef0 \
+    --protocol tcp \
+    --port 22 \
+    --cidr 0.0.0.0/0
+
+$ aws ec2 authorize-security-group-ingress \
+    --group-name MySecurityGroup \
+    --protocol http \
+    --port 80 \
+    --cidr 0.0.0.0/0
+
+$ aws ec2 authorize-security-group-ingress \
+    --group-name MySecurityGroup \
+    --protocol http \
+    --port 80 \
+    --cidr ::/0
