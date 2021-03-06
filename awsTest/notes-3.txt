@@ -21,4 +21,4 @@ $ aws ec2 authorize-security-group-ingress \
     --port 80 \
     --cidr ::/0
 
-$ aws ec2 run-instances --image-id ami-0a1ccc021b9016ec9 --count 1 --instance-type t2.micro --key-name cli-key --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e
+$ aws ec2 run-instances --image-id ami-0a1ccc021b9016ec9 --count 1 --instance-type t2.micro --key-name cli-key --security-group-ids sg-02eb4d52bb8eeeb9c --subnet-id subnet-18df2a52
