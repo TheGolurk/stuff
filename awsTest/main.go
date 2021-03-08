@@ -29,4 +29,6 @@ func main() {
 	}
 
 	fmt.Printf("%s", a)
+
+	// Expecting output with or wihin text (json) -> Then save as json to terminate the instances
 }
