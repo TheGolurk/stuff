@@ -1,15 +1,20 @@
 package main
 
-import (
-	"fmt"
-	"os/exec"
-)
+import "fmt"
 
 func main() {
-	//	aws ec2 describe-instances --filters "Name=instance-type,Values=t2.micro" --query "Reservations[].Instances[].InstanceId"
-	cmd, _ := exec.Command("aws", `ec2 describe-instances --filters "Name=instance-type,Values=t2.micro" --query "Reservations[].Instances[].InstanceId"`).Output()
-	fmt.Println("s", string(cmd))
-	fmt.Printf("%v", cmd)
 
-	// Expecting output with or wihin text (json) -> Then save as json to terminate the instances
+	instances := []string{
+		"ec2-00-000-00-000.compute-1.amazonaws.com",
+	}
+
+	names := make(map[string]string)
+	names["PEPITO JUANITO"] = "PEPITO.LOCO@EMPRESA.com"
+
+	index := 0
+	for k, i := range names {
+		fmt.Printf("|Correo: %s Nombre: %s | -> Instancia: ssh -i mxintech-key.pem ec2-user@%s \n\n", i, k, instances[index])
+		index++
+	}
+
 }
