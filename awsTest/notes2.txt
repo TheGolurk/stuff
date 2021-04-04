@@ -1,3 +1,0 @@
-$ aws ec2 create-security-group --group-name cli-sg-2 --description "My security group"
-
-
