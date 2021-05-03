@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -63,4 +64,26 @@ func main() {
 			token = v.String()
 		}
 	}
+
+	// Then we can do whatever request that we need
+}
+
+func makeRequest(path, method string) error {
+	url, err := url.Parse(path)
+	if err != nil {
+		return err
+	}
+
+	req := &http.Request{
+		URL: url,
+	}
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	println(res)
+
+	return nil
 }
