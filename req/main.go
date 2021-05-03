@@ -13,6 +13,7 @@ import (
 var (
 	user     = os.Getenv("tbot_user")
 	password = os.Getenv("tbot_pwd")
+	token    = ""
 )
 
 type UserInfo struct {
@@ -21,7 +22,6 @@ type UserInfo struct {
 }
 
 func main() {
-
 	User := UserInfo{
 		User:     user,
 		Password: password,
@@ -32,7 +32,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	response, err := http.Post("/", "application/json", bytes.NewBuffer(UserJson))
+	// Login, get token and continue (only execute when auth is not working)
+	response, err := http.Post("http://localhost:3001/agrosmart/v1/user/login", "application/json", bytes.NewBuffer(UserJson))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,10 +44,23 @@ func main() {
 		}
 	}()
 
+	if response.StatusCode == http.StatusBadRequest {
+		// return custom error
+		log.Fatal(err)
+	}
+
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println(string(body))
+
+	cookies := response.Cookies()
+	for i, v := range cookies {
+		fmt.Println(v, i)
+		if v.Name == "Token" {
+			token = v.String()
+		}
+	}
 }
